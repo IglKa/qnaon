@@ -16,7 +16,7 @@ def create_question(request):
                  question_author = request.POST['q_author'],
                  question_pub_date = timezone.now())
     q.save()
-    return HttpResponseRedirect(revers('main:index'))
+    return HttpResponseRedirect(reverse('main:index'))
 
 
 def question_details(request, q_id):
