@@ -1,22 +1,24 @@
-from django.shortcuts import render
 from django.http import HttpResponse, Http404, HttpResponseRedirect
-from .models import Question, Answer
-from django.utils import timezone
+from django.shortcuts import render
 from django.urls import reverse
+from django.utils import timezone
 
+from .models import Question, Answer
+from register_n_profile.models import User
 
-def index(request):
+def home_page(request):
+    template_name = 'home.html'
     last_questions = Question.objects.all()[:10]
-    return render(request, 'main/list.html', {'last_questions':last_questions})
+    return render(request, template_name, {'last_questions':last_questions})
 
 
 def create_question(request):
     q = Question(question_title = request.POST['q_title'],
                  question_text = request.POST['q_text'],
-                 question_author = request.POST['q_author'],
+                 question_author = User.get_username(),
                  question_pub_date = timezone.now())
     q.save()
-    return HttpResponseRedirect(reverse('main:index'))
+    return HttpResponseRedirect(reverse('main:home'))
 
 
 def question_details(request, q_id):
@@ -29,7 +31,7 @@ def question_details(request, q_id):
     return render(request, 'main/question_details.html', {'question':q, 'answers':a})
 
 
-def answer(request, q_id):
+def answere(request, q_id):
     try:
         q = Question.objects.get(id=q_id)
     except:
